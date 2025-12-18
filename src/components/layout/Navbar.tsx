@@ -1,6 +1,8 @@
 import { Search, Camera, Heart, Folder, ShoppingCart, Sparkles } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { useAuth } from "@/contexts/AuthContext";
 
 const navCategories = [
   { name: "New", isHighlighted: true },
@@ -18,13 +20,16 @@ const navCategories = [
 ];
 
 const Navbar = () => {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
       {/* Top Bar */}
       <div className="container mx-auto px-4 lg:px-8">
         <div className="flex items-center justify-between h-16 gap-4">
           {/* Logo */}
-          <a href="/" className="flex-shrink-0">
+          <Link to="/" className="flex-shrink-0">
             <svg
               width="40"
               height="40"
@@ -40,7 +45,7 @@ const Navbar = () => {
                 strokeLinejoin="round"
               />
             </svg>
-          </a>
+          </Link>
 
           {/* Search Bar */}
           <div className="flex-1 max-w-2xl hidden md:block">
@@ -71,8 +76,12 @@ const Navbar = () => {
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
               <ShoppingCart className="w-5 h-5" />
             </button>
-            <Button variant="outline" className="rounded-full ml-2">
-              Sign In
+            <Button 
+              variant="outline" 
+              className="rounded-full ml-2"
+              onClick={() => navigate(user ? "/dashboard" : "/auth")}
+            >
+              {user ? "Dashboard" : "Sign In"}
             </Button>
           </div>
         </div>
