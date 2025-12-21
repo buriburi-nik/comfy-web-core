@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
-import { ChevronRight, ChevronDown, Search, Plus } from "lucide-react";
+import { useNavigate, Link } from "react-router-dom";
+import { ChevronRight, ChevronDown, Search, Plus, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { useAuth } from "@/contexts/AuthContext";
 import { supabase } from "@/integrations/supabase/client";
@@ -104,8 +104,11 @@ const Dashboard = () => {
               Welcome, {firstName}
             </h1>
             <div className="flex justify-center gap-4">
-              <Button className="rounded-full px-8 bg-foreground text-background hover:bg-foreground/90">
-                See All
+              <Button asChild className="rounded-full px-8 bg-primary text-primary-foreground hover:bg-primary/90">
+                <Link to="/products">
+                  <ShoppingBag className="w-4 h-4 mr-2" />
+                  Product Listing
+                </Link>
               </Button>
               <Button variant="outline" className="rounded-full px-8">
                 See New
