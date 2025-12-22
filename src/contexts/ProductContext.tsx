@@ -3,7 +3,7 @@ import { Product, mockProducts, vendors, Vendor } from '@/data/mockProducts';
 import { simulateApiCall } from '@/utils/productUtils';
 import { toast } from 'sonner';
 
-export type UserRole = 'public' | 'vendor' | 'admin';
+export type UserRole = 'public' | 'vendor';
 
 interface ProductContextType {
   products: Product[];
@@ -18,9 +18,6 @@ interface ProductContextType {
   bulkDeleteProducts: (ids: string[]) => Promise<void>;
   bulkUpdateStatus: (ids: string[], status: Product['status']) => Promise<void>;
   bulkUpdateCategory: (ids: string[], category: string) => Promise<void>;
-  approveProduct: (id: string) => Promise<void>;
-  rejectProduct: (id: string) => Promise<void>;
-  flagProduct: (id: string) => Promise<void>;
 }
 
 const ProductContext = createContext<ProductContextType | undefined>(undefined);
@@ -135,21 +132,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
     }
   }, []);
 
-  const approveProduct = useCallback(async (id: string) => {
-    await updateProduct(id, { status: 'active' });
-    toast.success('Product approved');
-  }, [updateProduct]);
-
-  const rejectProduct = useCallback(async (id: string) => {
-    await updateProduct(id, { status: 'rejected' });
-    toast.success('Product rejected');
-  }, [updateProduct]);
-
-  const flagProduct = useCallback(async (id: string) => {
-    await updateProduct(id, { status: 'flagged' });
-    toast.success('Product flagged for review');
-  }, [updateProduct]);
-
   return (
     <ProductContext.Provider
       value={{
@@ -165,9 +147,6 @@ export const ProductProvider: React.FC<{ children: React.ReactNode }> = ({ child
         bulkDeleteProducts,
         bulkUpdateStatus,
         bulkUpdateCategory,
-        approveProduct,
-        rejectProduct,
-        flagProduct,
       }}
     >
       {children}

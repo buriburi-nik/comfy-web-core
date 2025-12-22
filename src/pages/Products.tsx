@@ -54,11 +54,6 @@ const Products = () => {
                   <Link to="/vendor/dashboard">Vendor Dashboard</Link>
                 </Button>
               )}
-              {role === 'admin' && (
-                <Button asChild>
-                  <Link to="/admin/dashboard">Admin Dashboard</Link>
-                </Button>
-              )}
             </div>
           </div>
         </div>
