@@ -2,6 +2,7 @@ import { Link } from 'react-router-dom';
 import { Heart, ShoppingCart } from 'lucide-react';
 import { Product } from '@/data/mockProducts';
 import { useProducts } from '@/contexts/ProductContext';
+import { useCart } from '@/contexts/CartContext';
 import { formatPrice } from '@/utils/productUtils';
 import { StatusBadge } from './StatusBadge';
 import { Button } from '@/components/ui/button';
@@ -14,7 +15,16 @@ interface ProductCardProps {
 
 export const ProductCard = ({ product, showStatus = false }: ProductCardProps) => {
   const { vendors } = useProducts();
+  const { addItem } = useCart();
   const vendor = vendors.find((v) => v.id === product.vendorId);
+
+  const handleAddToCart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    e.stopPropagation();
+    if (product.stock > 0) {
+      addItem(product);
+    }
+  };
 
   return (
     <Card className="group overflow-hidden hover:shadow-lg transition-all duration-300">
@@ -69,7 +79,13 @@ export const ProductCard = ({ product, showStatus = false }: ProductCardProps) =
             )}
           </div>
           
-          <Button size="icon" variant="ghost" className="h-8 w-8" disabled={product.stock === 0}>
+          <Button 
+            size="icon" 
+            variant="ghost" 
+            className="h-8 w-8" 
+            disabled={product.stock === 0}
+            onClick={handleAddToCart}
+          >
             <ShoppingCart className="h-4 w-4" />
           </Button>
         </div>
