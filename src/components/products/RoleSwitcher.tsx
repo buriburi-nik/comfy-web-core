@@ -1,5 +1,5 @@
 import { UserRole, useProducts } from '@/contexts/ProductContext';
-import { User, Store, Shield } from 'lucide-react';
+import { User, Store } from 'lucide-react';
 import {
   Select,
   SelectContent,
@@ -11,7 +11,6 @@ import {
 const roles: { value: UserRole; label: string; icon: React.ReactNode }[] = [
   { value: 'public', label: 'Public User', icon: <User className="h-4 w-4" /> },
   { value: 'vendor', label: 'Vendor', icon: <Store className="h-4 w-4" /> },
-  { value: 'admin', label: 'Admin', icon: <Shield className="h-4 w-4" /> },
 ];
 
 export const RoleSwitcher = () => {
