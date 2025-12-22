@@ -3,6 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
+import { useCart } from "@/contexts/CartContext";
 
 const navCategories = [
   { name: "New", isHighlighted: true },
@@ -22,6 +23,7 @@ const navCategories = [
 const Navbar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const { toggleCart, totalItems } = useCart();
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
@@ -87,8 +89,16 @@ const Navbar = () => {
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors hidden sm:flex">
               <Folder className="w-5 h-5" />
             </button>
-            <button className="p-2 text-muted-foreground hover:text-foreground transition-colors">
+            <button 
+              className="p-2 text-muted-foreground hover:text-foreground transition-colors relative"
+              onClick={toggleCart}
+            >
               <ShoppingCart className="w-5 h-5" />
+              {totalItems > 0 && (
+                <span className="absolute -top-1 -right-1 bg-primary text-primary-foreground text-xs font-bold rounded-full h-5 w-5 flex items-center justify-center">
+                  {totalItems > 99 ? '99+' : totalItems}
+                </span>
+              )}
             </button>
             <Button 
               variant="outline" 

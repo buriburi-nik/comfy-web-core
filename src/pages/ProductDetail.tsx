@@ -2,6 +2,7 @@ import { useState, useMemo } from 'react';
 import { useParams, Link, useNavigate } from 'react-router-dom';
 import { ArrowLeft, ChevronLeft, ChevronRight, Heart, Share2, ShoppingCart, Store, Star, Truck, Shield, RotateCcw } from 'lucide-react';
 import { useProducts } from '@/contexts/ProductContext';
+import { useCart } from '@/contexts/CartContext';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
@@ -11,8 +12,15 @@ const ProductDetail = () => {
   const { slug } = useParams<{ slug: string }>();
   const navigate = useNavigate();
   const { products, vendors } = useProducts();
+  const { addItem } = useCart();
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
   const [quantity, setQuantity] = useState(1);
+
+  const handleAddToCart = () => {
+    if (product && product.stock > 0) {
+      addItem(product, quantity);
+    }
+  };
 
   const product = useMemo(() => {
     return products.find((p) => p.slug === slug);
@@ -192,7 +200,11 @@ const ProductDetail = () => {
                   +
                 </Button>
               </div>
-              <Button className="flex-1 gap-2" disabled={product.stock === 0}>
+              <Button 
+                className="flex-1 gap-2" 
+                disabled={product.stock === 0}
+                onClick={handleAddToCart}
+              >
                 <ShoppingCart className="h-4 w-4" />
                 Add to Cart
               </Button>
