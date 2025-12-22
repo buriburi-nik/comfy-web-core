@@ -64,6 +64,20 @@ const Navbar = () => {
 
           {/* Right Actions */}
           <div className="flex items-center gap-2">
+            <Button 
+              variant="ghost" 
+              className="hidden sm:flex"
+              onClick={() => navigate("/products")}
+            >
+              Products
+            </Button>
+            <Button 
+              variant="ghost" 
+              className="hidden sm:flex"
+              onClick={() => navigate("/vendor/dashboard")}
+            >
+              Vendor
+            </Button>
             <button className="p-2 text-muted-foreground hover:text-foreground transition-colors hidden sm:flex">
               <Sparkles className="w-5 h-5" />
             </button>
