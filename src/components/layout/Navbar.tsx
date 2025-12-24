@@ -1,29 +1,28 @@
+import { useState } from "react";
 import { Search, Camera, Heart, Folder, ShoppingCart, Sparkles } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { useAuth } from "@/contexts/AuthContext";
 import { useCart } from "@/contexts/CartContext";
-
-const navCategories = [
-  { name: "New", isHighlighted: true },
-  { name: "Construction", isHighlighted: false },
-  { name: "Finishes", isHighlighted: false },
-  { name: "Door & Windows", isHighlighted: false },
-  { name: "Lighting", isHighlighted: false },
-  { name: "Furniture", isHighlighted: false },
-  { name: "Appliances", isHighlighted: false },
-  { name: "Decor", isHighlighted: false },
-  { name: "Bathware", isHighlighted: false },
-  { name: "Sustainable", isHighlighted: false },
-  { name: "Smart", isHighlighted: false },
-  { name: "Protection", isHighlighted: false },
-];
+import MegaMenu, { categoriesData } from "./MegaMenu";
 
 const Navbar = () => {
   const { user } = useAuth();
   const navigate = useNavigate();
   const { toggleCart, totalItems } = useCart();
+  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [activeCategory, setActiveCategory] = useState<string | null>(null);
+
+  const handleCategoryHover = (categoryName: string) => {
+    setActiveCategory(categoryName);
+    setIsMenuOpen(true);
+  };
+
+  const handleMenuClose = () => {
+    setIsMenuOpen(false);
+    setActiveCategory(null);
+  };
 
   return (
     <header className="sticky top-0 z-50 bg-background border-b border-border">
@@ -112,25 +111,35 @@ const Navbar = () => {
       </div>
 
       {/* Category Navigation */}
-      <nav className="border-t border-border overflow-x-auto">
+      <nav className="border-t border-border overflow-x-auto relative">
         <div className="container mx-auto px-4 lg:px-8">
           <ul className="flex items-center gap-6 lg:gap-8 h-12 whitespace-nowrap">
-            {navCategories.map((category) => (
+            {categoriesData.map((category) => (
               <li key={category.name}>
-                <a
-                  href="#"
-                  className={`text-sm font-medium transition-colors hover:text-primary ${
-                    category.isHighlighted
+                <button
+                  className={`text-sm font-medium transition-colors hover:text-primary px-2 py-1 rounded ${
+                    activeCategory === category.name
+                      ? "text-primary bg-primary/5"
+                      : category.isHighlighted
                       ? "text-primary"
                       : "text-foreground"
                   }`}
+                  onMouseEnter={() => handleCategoryHover(category.name)}
                 >
                   {category.name}
-                </a>
+                </button>
               </li>
             ))}
           </ul>
         </div>
+
+        {/* Mega Menu */}
+        <MegaMenu
+          isOpen={isMenuOpen}
+          activeCategory={activeCategory}
+          onCategoryHover={setActiveCategory}
+          onClose={handleMenuClose}
+        />
       </nav>
     </header>
   );
