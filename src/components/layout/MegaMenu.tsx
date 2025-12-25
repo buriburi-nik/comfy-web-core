@@ -2,6 +2,14 @@ import { useState } from "react";
 import { ChevronRight } from "lucide-react";
 import { Link } from "react-router-dom";
 
+// Category images
+import furnitureImg from "@/assets/categories/furniture.jpg";
+import lightingImg from "@/assets/categories/lighting.jpg";
+import bathwareImg from "@/assets/categories/bathware.jpg";
+import decorImg from "@/assets/categories/decor.jpg";
+import appliancesImg from "@/assets/categories/appliances.jpg";
+import constructionImg from "@/assets/categories/construction.jpg";
+
 interface SubCategory {
   name: string;
   items: string[];
@@ -22,6 +30,7 @@ const categoriesData: Category[] = [
       { name: "Latest Arrivals", items: ["This Week", "This Month", "Trending", "Best Sellers"] },
       { name: "Featured Collections", items: ["Spring Collection", "Eco-Friendly", "Designer Picks", "Budget Friendly"] },
     ],
+    image: furnitureImg,
   },
   {
     name: "Construction",
@@ -30,6 +39,7 @@ const categoriesData: Category[] = [
       { name: "Structural Elements", items: ["Beams", "Columns", "Slabs", "Foundations", "Roofing"] },
       { name: "Insulation", items: ["Thermal Insulation", "Sound Insulation", "Waterproofing", "Vapor Barriers"] },
     ],
+    image: constructionImg,
   },
   {
     name: "Finishes",
@@ -38,6 +48,7 @@ const categoriesData: Category[] = [
       { name: "Floor Finishes", items: ["Hardwood", "Laminate", "Vinyl", "Carpet", "Tile Flooring"] },
       { name: "Ceiling Finishes", items: ["Suspended Ceilings", "Plaster", "Wood Ceilings", "Acoustic Panels"] },
     ],
+    image: decorImg,
   },
   {
     name: "Door & Windows",
@@ -46,6 +57,7 @@ const categoriesData: Category[] = [
       { name: "Windows", items: ["Casement", "Double Hung", "Skylights", "Bay Windows", "Picture Windows"] },
       { name: "Hardware", items: ["Handles", "Locks", "Hinges", "Door Closers", "Window Latches"] },
     ],
+    image: constructionImg,
   },
   {
     name: "Lighting",
@@ -54,6 +66,7 @@ const categoriesData: Category[] = [
       { name: "Outdoor Lighting", items: ["Landscape Lights", "Security Lights", "Pathway Lights", "Flood Lights"] },
       { name: "Smart Lighting", items: ["Smart Bulbs", "Light Controllers", "Motion Sensors", "Dimmers"] },
     ],
+    image: lightingImg,
   },
   {
     name: "Furniture",
@@ -65,6 +78,7 @@ const categoriesData: Category[] = [
       { name: "Kids furniture", items: ["Study Desks", "Toy Storage", "Kids Chairs", "Bunk Beds"] },
       { name: "Furniture components and hardware", items: ["Drawers", "Cabinet doors", "Table tops", "Table bases", "Furniture handles"] },
     ],
+    image: furnitureImg,
   },
   {
     name: "Appliances",
@@ -73,6 +87,7 @@ const categoriesData: Category[] = [
       { name: "Laundry", items: ["Washing Machines", "Dryers", "Washer-Dryer Combos", "Ironing Systems"] },
       { name: "Climate Control", items: ["Air Conditioners", "Heaters", "Dehumidifiers", "Air Purifiers"] },
     ],
+    image: appliancesImg,
   },
   {
     name: "Decor",
@@ -81,6 +96,7 @@ const categoriesData: Category[] = [
       { name: "Textiles", items: ["Curtains", "Rugs", "Cushions", "Throws", "Bedding"] },
       { name: "Accessories", items: ["Vases", "Candles", "Plants", "Sculptures", "Decorative Bowls"] },
     ],
+    image: decorImg,
   },
   {
     name: "Bathware",
@@ -89,6 +105,7 @@ const categoriesData: Category[] = [
       { name: "Faucets", items: ["Basin Faucets", "Shower Heads", "Bath Mixers", "Kitchen Faucets"] },
       { name: "Accessories", items: ["Towel Racks", "Soap Dispensers", "Mirrors", "Storage", "Bath Mats"] },
     ],
+    image: bathwareImg,
   },
   {
     name: "Sustainable",
@@ -97,6 +114,7 @@ const categoriesData: Category[] = [
       { name: "Energy Efficient", items: ["Solar Panels", "LED Lighting", "Smart Thermostats", "Insulation"] },
       { name: "Water Saving", items: ["Low-Flow Fixtures", "Rainwater Systems", "Greywater Systems"] },
     ],
+    image: decorImg,
   },
   {
     name: "Smart",
@@ -105,6 +123,7 @@ const categoriesData: Category[] = [
       { name: "Security", items: ["Smart Locks", "Cameras", "Doorbells", "Alarm Systems", "Sensors"] },
       { name: "Entertainment", items: ["Smart TVs", "Sound Systems", "Streaming Devices", "Multi-Room Audio"] },
     ],
+    image: appliancesImg,
   },
   {
     name: "Protection",
@@ -113,6 +132,7 @@ const categoriesData: Category[] = [
       { name: "Security Systems", items: ["Alarm Systems", "CCTV", "Access Control", "Safes"] },
       { name: "Weather Protection", items: ["Storm Shutters", "Flood Barriers", "Weather Stripping", "Sealants"] },
     ],
+    image: constructionImg,
   },
 ];
 
@@ -193,16 +213,25 @@ const MegaMenu = ({ isOpen, activeCategory, onClose }: MegaMenuProps) => {
             </div>
 
             {/* Featured Image */}
-            <div className="w-56 p-6 hidden xl:flex items-center">
-              <div className="rounded-xl overflow-hidden w-full aspect-square bg-gradient-to-br from-accent to-muted flex items-center justify-center">
-                <div className="text-center p-4">
-                  <p className="text-sm font-medium text-foreground">Explore {currentCategory.name}</p>
+            <div className="w-64 p-6 hidden xl:flex items-center">
+              <div className="rounded-xl overflow-hidden w-full h-full relative">
+                {currentCategory.image ? (
+                  <img 
+                    src={currentCategory.image} 
+                    alt={currentCategory.name}
+                    className="w-full h-full object-cover"
+                  />
+                ) : (
+                  <div className="w-full h-full bg-gradient-to-br from-accent to-muted" />
+                )}
+                <div className="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent" />
+                <div className="absolute bottom-4 left-4 right-4 text-center">
                   <Link 
                     to={`/products?category=${encodeURIComponent(currentCategory.name)}`}
-                    className="text-xs text-primary hover:underline mt-2 inline-block"
+                    className="text-sm text-white font-medium hover:underline"
                     onClick={onClose}
                   >
-                    View All →
+                    Explore {currentCategory.name} →
                   </Link>
                 </div>
               </div>
