@@ -119,90 +119,98 @@ const categoriesData: Category[] = [
 interface MegaMenuProps {
   isOpen: boolean;
   activeCategory: string | null;
-  onCategoryHover: (category: string | null) => void;
   onClose: () => void;
 }
 
-const MegaMenu = ({ isOpen, activeCategory, onCategoryHover, onClose }: MegaMenuProps) => {
+const MegaMenu = ({ isOpen, activeCategory, onClose }: MegaMenuProps) => {
   const [activeSubcategory, setActiveSubcategory] = useState<string | null>(null);
   
   const currentCategory = categoriesData.find(cat => cat.name === activeCategory);
-  const currentSubcategory = currentCategory?.subcategories.find(sub => sub.name === activeSubcategory);
+  const currentSubcategory = currentCategory?.subcategories.find(sub => sub.name === activeSubcategory) || currentCategory?.subcategories[0];
+
+  // Set default subcategory when category changes
+  useState(() => {
+    if (currentCategory && !activeSubcategory) {
+      setActiveSubcategory(currentCategory.subcategories[0]?.name || null);
+    }
+  });
 
   if (!isOpen || !activeCategory || !currentCategory) return null;
 
   return (
-    <div 
-      className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-lg z-50"
-      onMouseLeave={onClose}
-    >
-      <div className="container mx-auto px-4 lg:px-8">
-        <div className="flex min-h-[400px]">
-          {/* Left Panel - Main Subcategories */}
-          <div className="w-72 bg-accent/30 py-6 px-4 border-r border-border">
-            <h3 className="text-xl font-semibold mb-4 px-2">{currentCategory.name}</h3>
-            <ul className="space-y-1">
-              {currentCategory.subcategories.map((subcategory) => (
-                <li key={subcategory.name}>
-                  <button
-                    className={`w-full flex items-center justify-between px-3 py-2.5 rounded-lg text-sm font-medium transition-colors ${
-                      activeSubcategory === subcategory.name
-                        ? "bg-primary/10 text-primary"
-                        : "hover:bg-accent text-foreground"
-                    }`}
-                    onMouseEnter={() => setActiveSubcategory(subcategory.name)}
-                  >
-                    {subcategory.name}
-                    <ChevronRight className="w-4 h-4" />
-                  </button>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* Right Panel - Subcategory Items */}
-          <div className="flex-1 py-6 px-8">
-            {currentSubcategory ? (
-              <>
-                <h3 className="text-xl font-semibold mb-6">{currentSubcategory.name}</h3>
-                <div className="grid grid-cols-2 lg:grid-cols-3 gap-x-8 gap-y-3">
-                  {currentSubcategory.items.map((item) => (
-                    <Link
-                      key={item}
-                      to={`/products?category=${encodeURIComponent(item)}`}
-                      className="text-sm text-muted-foreground hover:text-primary transition-colors py-1"
-                      onClick={onClose}
+    <>
+      {/* Backdrop */}
+      <div 
+        className="fixed inset-0 bg-black/20 z-40"
+        onClick={onClose}
+      />
+      
+      <div className="absolute left-0 right-0 top-full bg-background border-b border-border shadow-xl z-50">
+        <div className="container mx-auto px-4 lg:px-8">
+          <div className="flex min-h-[320px]">
+            {/* Left Panel - Main Subcategories */}
+            <div className="w-80 bg-accent/40 py-6 border-r border-border">
+              <h3 className="text-lg font-semibold mb-4 px-6">{currentCategory.name}</h3>
+              <ul className="space-y-0.5">
+                {currentCategory.subcategories.map((subcategory) => (
+                  <li key={subcategory.name}>
+                    <button
+                      className={`w-full flex items-center justify-between px-6 py-3 text-sm transition-colors ${
+                        activeSubcategory === subcategory.name || (!activeSubcategory && currentCategory.subcategories[0]?.name === subcategory.name)
+                          ? "bg-primary/10 text-primary font-medium"
+                          : "hover:bg-accent/60 text-foreground"
+                      }`}
+                      onMouseEnter={() => setActiveSubcategory(subcategory.name)}
+                      onClick={() => setActiveSubcategory(subcategory.name)}
                     >
-                      {item}
-                    </Link>
-                  ))}
-                </div>
-              </>
-            ) : (
-              <div className="text-muted-foreground text-sm">
-                Hover over a category to see items
-              </div>
-            )}
-          </div>
+                      {subcategory.name}
+                      <ChevronRight className="w-4 h-4 text-muted-foreground" />
+                    </button>
+                  </li>
+                ))}
+              </ul>
+            </div>
 
-          {/* Featured Image */}
-          <div className="w-64 p-6 hidden xl:block">
-            <div className="rounded-xl overflow-hidden h-full bg-gradient-to-br from-accent to-muted flex items-center justify-center">
-              <div className="text-center p-4">
-                <p className="text-sm font-medium text-foreground">Explore {currentCategory.name}</p>
-                <Link 
-                  to={`/products?category=${encodeURIComponent(currentCategory.name)}`}
-                  className="text-xs text-primary hover:underline mt-2 inline-block"
-                  onClick={onClose}
-                >
-                  View All →
-                </Link>
+            {/* Right Panel - Subcategory Items */}
+            <div className="flex-1 py-6 px-10">
+              {currentSubcategory && (
+                <>
+                  <h3 className="text-lg font-semibold mb-6">{currentSubcategory.name}</h3>
+                  <div className="grid grid-cols-2 gap-x-12 gap-y-2">
+                    {currentSubcategory.items.map((item) => (
+                      <Link
+                        key={item}
+                        to={`/products?category=${encodeURIComponent(item)}`}
+                        className="text-sm text-muted-foreground hover:text-primary transition-colors py-1.5"
+                        onClick={onClose}
+                      >
+                        {item}
+                      </Link>
+                    ))}
+                  </div>
+                </>
+              )}
+            </div>
+
+            {/* Featured Image */}
+            <div className="w-56 p-6 hidden xl:flex items-center">
+              <div className="rounded-xl overflow-hidden w-full aspect-square bg-gradient-to-br from-accent to-muted flex items-center justify-center">
+                <div className="text-center p-4">
+                  <p className="text-sm font-medium text-foreground">Explore {currentCategory.name}</p>
+                  <Link 
+                    to={`/products?category=${encodeURIComponent(currentCategory.name)}`}
+                    className="text-xs text-primary hover:underline mt-2 inline-block"
+                    onClick={onClose}
+                  >
+                    View All →
+                  </Link>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </div>
-    </div>
+    </>
   );
 };
 

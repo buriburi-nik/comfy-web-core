@@ -14,9 +14,14 @@ const Navbar = () => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState<string | null>(null);
 
-  const handleCategoryHover = (categoryName: string) => {
-    setActiveCategory(categoryName);
-    setIsMenuOpen(true);
+  const handleCategoryClick = (categoryName: string) => {
+    if (activeCategory === categoryName && isMenuOpen) {
+      setIsMenuOpen(false);
+      setActiveCategory(null);
+    } else {
+      setActiveCategory(categoryName);
+      setIsMenuOpen(true);
+    }
   };
 
   const handleMenuClose = () => {
@@ -117,14 +122,14 @@ const Navbar = () => {
             {categoriesData.map((category) => (
               <li key={category.name}>
                 <button
-                  className={`text-sm font-medium transition-colors hover:text-primary px-2 py-1 rounded ${
-                    activeCategory === category.name
-                      ? "text-primary bg-primary/5"
+                  className={`text-sm font-medium transition-colors hover:text-primary px-3 py-2 rounded-md ${
+                    activeCategory === category.name && isMenuOpen
+                      ? "text-primary bg-primary/10"
                       : category.isHighlighted
                       ? "text-primary"
                       : "text-foreground"
                   }`}
-                  onMouseEnter={() => handleCategoryHover(category.name)}
+                  onClick={() => handleCategoryClick(category.name)}
                 >
                   {category.name}
                 </button>
@@ -137,7 +142,6 @@ const Navbar = () => {
         <MegaMenu
           isOpen={isMenuOpen}
           activeCategory={activeCategory}
-          onCategoryHover={setActiveCategory}
           onClose={handleMenuClose}
         />
       </nav>
